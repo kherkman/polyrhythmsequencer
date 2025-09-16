@@ -3116,29 +3116,35 @@
 
             // --- Remove Sequencer ---
             remove() {
-                const index = activeSequencers.findIndex(seq => seq.id === this.id);
-                if (index !== -1) {
-                    activeSequencers.splice(index, 1);
+                // Disconnect sequencer's audio nodes from the master mixer (NEW)
+                // this.sequencerPannerNode connects to masterInputMixer
+                // this.sequencerGainNode connects to this.sequencerPannerNode
+                if (this.sequencerPannerNode && masterInputMixer) {
+                    this.sequencerPannerNode.disconnect(masterInputMixer);
                 }
-                this.sequencerDiv.remove();
+                if (this.sequencerGainNode && this.sequencerPannerNode) {
+                    this.sequencerGainNode.disconnect(this.sequencerPannerNode);
+                }
+                
+                this.sequencerDiv.remove(); // Remove DOM element
                 console.log(`Sequencer ${this.id} removed.`);
                 
                 // If the removed sequencer had a selected circle, deselect it
                 if (selectedCircle.sequencer === this) {
                     this.deselectCircle();
                 }
-                // If the removed sequencer was soloed, clear solo state
-                if (globalSoloedId === this.id) {
+
+                // If this sequencer was the soloed one, clear the global solo flag.
+                // The globalPlayback state and preSoloMuteStates are handled in applyLoadedSettings.
+                if (globalSoloedId === this.id) { // Simplified for better global reset logic
                     globalSoloedId = null;
-                    preSoloMuteStates.clear();
-                    activeSequencers.forEach(seq => {
-                        seq.isMuted = preSoloMuteStates.get(seq.id) || false; // Restore pre-solo mute state for all
-                        seq.playStopButton.classList.remove('stop');
-                        seq.playStopButton.textContent = 'Unmuted';
-                        seq.soloButton.classList.remove('active');
-                    });
-                     // If global playback was started by solo, stop it.
-                    if (isPlayingGlobal) toggleGlobalPlayStop();
+                }
+
+                // Remove the sequencer from the activeSequencers array.
+                // This is crucial for the while loop in applyLoadedSettings to terminate correctly.
+                const index = activeSequencers.findIndex(seq => seq.id === this.id);
+                if (index !== -1) {
+                    activeSequencers.splice(index, 1);
                 }
             }
 
@@ -3403,11 +3409,28 @@
         }
 
         function applyLoadedSettings(loadedSettings) {
-            // Stop and clear current state
+            // Stop and clear global state
             if (isPlayingGlobal) toggleGlobalPlayStop();
-            activeSequencers.forEach(seq => seq.remove()); // This also clears from activeSequencers
-            activeSequencers = []; // Ensure empty
-            globalSoloedId = null; // Clear solo state from previous session
+            
+            // Clear solo state and pre-solo mutes immediately for a clean slate (NEW)
+            globalSoloedId = null;
+            preSoloMuteStates.clear();
+
+            // Robustly remove all active sequencers (NEW loop structure)
+            while (activeSequencers.length > 0) {
+                // Call remove on the first sequencer.
+                // The remove method itself will handle DOM removal and disconnecting its audio nodes.
+                // It will also splice itself out of activeSequencers, making the array shorter.
+                activeSequencers[0].remove(); 
+            }
+            // After this loop, activeSequencers should be truly empty.
+
+            // Clear selected circle controls if anything was selected (NEW cleanup)
+            if (selectedCircle.sequencer) {
+                selectedCircle.sequencer.deselectCircle(); // This handles selectedCircle.sequencer = null and hides controls
+            } else {
+                selectedCircleControlsDiv.style.display = 'none'; // Ensure it's hidden even if no sequencer was selected
+            }
 
             // Clear all dynamic delay instances
             while(activeDelayInstances.length > 0) {
