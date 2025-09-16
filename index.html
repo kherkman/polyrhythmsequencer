@@ -2789,34 +2789,51 @@
             }
 
             // --- Individual Sequencer Tick (called by global loop) ---
-            tick(deltaTime) {
+            tick(deltaTime, prevGlobalLoopTime, didLoopWrap) { // UPDATED: signature includes new parameters
                 const loopDuration = globalBeatDuration * globalLoopBeats;
 
                 // Update visual position of vertical line (unphased)
+                // globalLoopTime is the *current* position in the loop (after deltaTime has been added)
                 this.verticalLineX = (globalLoopTime / loopDuration) * this.canvasWidth;
 
-                // Only process hits if not muted and not globally soloed (unless it's THIS soloed sequencer)
                 const canPlay = !this.isMuted && (globalSoloedId === null || globalSoloedId === this.id);
 
                 if (canPlay) {
-                    const previousGlobalLoopTimeRatio = (globalLoopTime - deltaTime) / loopDuration;
-                    const currentGlobalLoopTimeRatio = globalLoopTime / loopDuration;
+                    const currentLoopPos = globalLoopTime; // Current time in the loop
+                    const previousLoopPos = prevGlobalLoopTime; // Time in the loop before this frame's advance
 
                     this.circles.forEach(circle => {
-                        // Calculate the *phased* position of the circle for hit detection
                         let circleXRatio = circle.x / this.canvasWidth;
                         let phasedCircleXRatio = (circleXRatio + (this.phase / 100));
-                        phasedCircleXRatio %= 1; // Wrap around
-                        if (phasedCircleXRatio < 0) phasedCircleXRatio += 1; // Ensure positive
+                        phasedCircleXRatio %= 1;
+                        if (phasedCircleXRatio < 0) phasedCircleXRatio += 1;
+
+                        const targetTime = phasedCircleXRatio * loopDuration;
 
                         if (!circle.played) {
-                            // Check if the global current time crossed the phased position of the circle
-                            const crossedFromLeft = (previousGlobalLoopTimeRatio < phasedCircleXRatio && currentGlobalLoopTimeRatio >= phasedCircleXRatio);
-                            // Handle wrap-around scenario for hit detection:
-                            // If the line crossed 0/end AND the circle is at the very beginning/end of the loop after phasing
-                            const wrappedAroundHit = (previousGlobalLoopTimeRatio > currentGlobalLoopTimeRatio && (phasedCircleXRatio >= previousGlobalLoopTimeRatio || phasedCircleXRatio < currentGlobalLoopTimeRatio));
+                            let shouldPlay = false;
 
-                            if (crossedFromLeft || wrappedAroundHit) {
+                            // Condition 1: Normal forward crossing
+                            // The interval [previousLoopPos, currentLoopPos) crosses the targetTime
+                            // This covers beats at x=0 because previousLoopPos starts at -0.000001
+                            if (previousLoopPos < targetTime && currentLoopPos >= targetTime) {
+                                shouldPlay = true;
+                            }
+                            // Condition 2: Loop wrap-around crossing
+                            // This occurs when `previousLoopPos` is near `loopDuration` and `currentLoopPos` is near `0`.
+                            // `didLoopWrap` flag helps identify this frame specifically.
+                            // We need to check if the target time falls within the 'wrapped' interval.
+                            else if (didLoopWrap) {
+                                // If the loop wrapped, a beat is 'hit' if its targetTime is between
+                                // (the old position just before wrap) and (the new position just after wrap, which is < old position).
+                                // More accurately: if targetTime is from previousLoopPos up to loopDuration
+                                // OR from 0 up to currentLoopPos.
+                                if (targetTime >= previousLoopPos || targetTime < currentLoopPos) {
+                                     shouldPlay = true;
+                                }
+                            }
+
+                            if (shouldPlay) {
                                 circle.played = true;
 
                                 // Apply humanizer effects before playing
@@ -3159,6 +3176,32 @@
         // --- Global Animation Loop ---
         let globalAnimationFrameId;
 
+        async function toggleGlobalPlayStop() { // Made async to await audioContext.resume()
+            // NEW: Resume audio context if suspended, on user interaction
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+                console.log("AudioContext resumed.");
+            }
+
+            isPlayingGlobal = !isPlayingGlobal;
+            if (isPlayingGlobal) {
+                globalPlayStopButton.textContent = 'STOP ALL SEQUENCERS';
+                globalPlayStopButton.classList.add('stop');
+                lastGlobalUpdateTime = performance.now(); // Initialize for accurate delta time
+                globalLoopTime = -0.000001; // NEW: Start slightly before 0 to ensure 0-beats trigger
+                activeSequencers.forEach(seq => seq.resetPlaybackState()); // Ensure all start from beginning
+                globalAnimationFrameId = requestAnimationFrame(globalAnimate);
+                console.log("Global Playback Started.");
+            } else {
+                globalPlayStopButton.textContent = 'PLAY ALL SEQUENCERS';
+                globalPlayStopButton.classList.remove('stop');
+                cancelAnimationFrame(globalAnimationFrameId);
+                globalLoopTime = 0; // Reset to exact 0 when stopping
+                activeSequencers.forEach(seq => seq.resetPlaybackState());
+                console.log("Global Playback Stopped.");
+            }
+        }
+
         function globalAnimate(currentTime) {
             if (!isPlayingGlobal) {
                 lastGlobalUpdateTime = performance.now(); // Reset for next play
@@ -3173,35 +3216,26 @@
             lastGlobalUpdateTime = currentTime;
 
             const loopDuration = globalBeatDuration * globalLoopBeats;
+            const prevGlobalLoopTime = globalLoopTime; // NEW: Capture state before globalLoopTime updates
+
             globalLoopTime += deltaTime;
+
+            let didLoopWrap = false;
             if (globalLoopTime >= loopDuration) {
                 globalLoopTime -= loopDuration;
+                // NEW: If the loop wrapped and resulted in a time very close to 0,
+                // re-initialize to a small negative to ensure 0-beats trigger next round.
+                if (globalLoopTime < Number.EPSILON * 100) { 
+                     globalLoopTime = -0.000001;
+                }
+                didLoopWrap = true;
                 activeSequencers.forEach(seq => seq.resetPlaybackState()); // Reset played state for all circles in all sequencers
             }
 
-            activeSequencers.forEach(seq => seq.tick(deltaTime));
+            // NEW: Pass prevGlobalLoopTime and didLoopWrap to each sequencer's tick method
+            activeSequencers.forEach(seq => seq.tick(deltaTime, prevGlobalLoopTime, didLoopWrap));
 
             globalAnimationFrameId = requestAnimationFrame(globalAnimate);
-        }
-
-        function toggleGlobalPlayStop() {
-            isPlayingGlobal = !isPlayingGlobal;
-            if (isPlayingGlobal) {
-                globalPlayStopButton.textContent = 'STOP ALL SEQUENCERS';
-                globalPlayStopButton.classList.add('stop');
-                lastGlobalUpdateTime = performance.now(); // Initialize for accurate delta time
-                globalLoopTime = 0; // Reset global time
-                activeSequencers.forEach(seq => seq.resetPlaybackState()); // Ensure all start from beginning
-                globalAnimationFrameId = requestAnimationFrame(globalAnimate);
-                console.log("Global Playback Started.");
-            } else {
-                globalPlayStopButton.textContent = 'PLAY ALL SEQUENCERS';
-                globalPlayStopButton.classList.remove('stop');
-                cancelAnimationFrame(globalAnimationFrameId);
-                globalLoopTime = 0;
-                activeSequencers.forEach(seq => seq.resetPlaybackState());
-                console.log("Global Playback Stopped.");
-            }
         }
 
         function updateGlobalTempo() {
