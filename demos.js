@@ -12,9 +12,9 @@ const demoConfigs = [
         isHumanizerOn: false, humanizeTiming: 0, humanizeVelocity: 0, humanizePan: 0,
         humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
         sequencers: [
-            { id: 1, circles: [{ x: 1, velocity: 100, pan: 0 }, { x: 500, velocity: 100, pan: 0 } ], channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add"},
-            { id: 2, circles: [{ x: 1, velocity: 250, pan: 0 }, { x: 750, velocity: 100, pan: 0 } ], channel: "1", note: "36", wavFileName: "Snare_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add"},
-            { id: 3, circles: [{ x: 200, velocity: 90, pan: -0.2 }, { x: 600, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Shaker.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+            { id: 1, circles: [{ x: 1, velocity: 100, pan: 0 }, { x: 400, velocity: 100, pan: 0 } ], channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add"},
+            { id: 2, circles: [{ x: 200, velocity: 100, pan: 0 }, { x: 600, velocity: 100, pan: 0 } ], channel: "2", note: "40", wavFileName: "Snare_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add"},
+            { id: 3, circles: [{ x: 200, velocity: 90, pan: -0.2 }, { x: 600, velocity: 90, pan: 0.2 }], division: "1/4", channel: "3", note: "46", wavFileName: "Shaker.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
         ]
     },
     // Demo 2 
