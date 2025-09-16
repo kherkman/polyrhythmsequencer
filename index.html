@@ -679,7 +679,7 @@
             <label for="loopBeats">Loop Beats:</label>
             <input type="number" id="loopBeats" min="1" max="16" value="4">
         </div>
-        <button id="globalPlayStopButton">Play All</button>
+        <button id="globalPlayStopButton">PLAY ALL SEQUENCERS</button>
 
         <div class="input-group" style="width: 250px;">
             <div class="slider-label">
@@ -3198,7 +3198,7 @@
         function toggleGlobalPlayStop() {
             isPlayingGlobal = !isPlayingGlobal;
             if (isPlayingGlobal) {
-                globalPlayStopButton.textContent = 'Stop All';
+                globalPlayStopButton.textContent = 'STOP ALL SEQUENCERS';
                 globalPlayStopButton.classList.add('stop');
                 lastGlobalUpdateTime = performance.now(); // Initialize for accurate delta time
                 globalLoopTime = 0; // Reset global time
@@ -3206,7 +3206,7 @@
                 globalAnimationFrameId = requestAnimationFrame(globalAnimate);
                 console.log("Global Playback Started.");
             } else {
-                globalPlayStopButton.textContent = 'Play All';
+                globalPlayStopButton.textContent = 'PLAY ALL SEQUENCERS';
                 globalPlayStopButton.classList.remove('stop');
                 cancelAnimationFrame(globalAnimationFrameId);
                 globalLoopTime = 0;
