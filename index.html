@@ -179,6 +179,64 @@
             --slider-thumb: var(--primary-color);
         }
 
+        /* Skin: Brown */
+        body.brown {
+            --bg-color: #3e2723;
+            --text-color: #fbe9e7;
+            --primary-color: #a1887f;
+            --secondary-color: #d7ccc8;
+            --accent-color: #ffb74d;
+            --border-color: #5d4037;
+            --canvas-bg: #4e342e;
+            --canvas-line: #bcaaa4;
+            --circle-fill: var(--primary-color);
+            --circle-hit-fill: #ff7043;
+            --vertical-line: #ffab40;
+            --input-bg: #5d4037;
+            --input-border: #795548;
+            --hover-bg: #795548;
+            --button-text: white;
+            --play-color: #66bb6a;
+            --stop-color: #ef5350;
+            --remove-color: #ff5252;
+            --solo-color: #FFECB3;
+            --solo-active-text: #3e2723;
+            --waveform-color-seq: rgba(255, 159, 0, 0.8);
+            --waveform-color-global: rgba(255, 183, 77, 0.7);
+            --global-waveform-bg: #301f1c;
+            --slider-track: #795548;
+            --slider-thumb: var(--primary-color);
+        }
+
+        /* Skin: Orange */
+        body.orange {
+            --bg-color: #332100;
+            --text-color: #fff3e0;
+            --primary-color: #ff9800;
+            --secondary-color: #fb8c00;
+            --accent-color: #ffcc80;
+            --border-color: #5c3b00;
+            --canvas-bg: #472d00;
+            --canvas-line: #ffb74d;
+            --circle-fill: var(--primary-color);
+            --circle-hit-fill: #ef5350;
+            --vertical-line: #ff7043;
+            --input-bg: #5c3b00;
+            --input-border: #8d6e3f;
+            --hover-bg: #8d6e3f;
+            --button-text: #332100;
+            --play-color: #4CAF50;
+            --stop-color: #d32f2f;
+            --remove-color: #ff3d00;
+            --solo-color: #FFA726;
+            --solo-active-text: #332100;
+            --waveform-color-seq: rgba(255, 167, 38, 0.8);
+            --waveform-color-global: rgba(255, 136, 0, 0.7);
+            --global-waveform-bg: #221600;
+            --slider-track: #8d6e3f;
+            --slider-thumb: var(--primary-color);
+        }
+
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -584,13 +642,9 @@
                 <option value="retro-green">Retro Green</option>
                 <option value="cyberpunk">Cyberpunk</option>
                 <option value="deep-ocean">Deep Ocean</option>
+                <option value="brown">Brown</option>
+                <option value="orange">Orange</option>
             </select>
-        </div>
-
-        <div class="input-group">
-            <label for="tempoBPM">Tempo (BPM):</label>
-            <input type="number" id="tempoBPM" min="30" max="300" value="120">
-            <button id="tapTempoButton">Tap Tempo</button>
         </div>
 
         <div class="input-group">
@@ -611,7 +665,6 @@
             </select>
         </div>
         
-        <button id="globalPlayStopButton">Play All</button>
         <button id="addSequencerButton">Add Sequencer</button>
         <button id="generateBeatsButton">Generate Random Beats</button>
         <button id="saveMidiButton">Save to MIDI</button>
@@ -621,6 +674,17 @@
         <label for="loadSettingsFile" class="file-upload-label">Load Settings</label>
 
         <div class="global-section-header">Master Controls</div>
+        <div class="input-group">
+            <label for="tempoBPM">Tempo (BPM):</label>
+            <input type="number" id="tempoBPM" min="30" max="300" value="120">
+            <button id="tapTempoButton">Tap Tempo</button>
+        </div>
+        <div class="input-group">
+            <label for="loopBeats">Loop Beats:</label>
+            <input type="number" id="loopBeats" min="1" max="16" value="4">
+        </div>
+        <button id="globalPlayStopButton">Play All</button>
+
         <div class="input-group" style="width: 250px;">
             <div class="slider-label">
                 <label for="masterVolume">Master Volume:</label>
@@ -628,10 +692,7 @@
             </div>
             <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.75">
         </div>
-        <div class="input-group">
-            <label for="loopBeats">Loop Beats:</label>
-            <input type="number" id="loopBeats" min="1" max="16" value="4">
-        </div>
+
 
         <div class="global-section-header collapsible-header" data-target="effectsControls">
             Effects
@@ -856,6 +917,14 @@
     <div id="selectedCircleControls" style="display:none;">
         <div class="global-section-header">Selected Circle Controls</div>
         <div class="input-group" style="width: 100%;">
+            <label for="circleXPosition">X Position (pixels):</label>
+            <input type="number" id="circleXPosition" min="0" max="800" step="1" value="0">
+        </div>
+        <div class="input-group" style="width: 100%;">
+            <label for="circleXRatio">X Ratio (0.0-1.0):</label>
+            <input type="number" id="circleXRatio" min="0" max="1" step="0.001" value="0.0">
+        </div>
+        <div class="input-group" style="width: 100%;">
             <div class="slider-label">
                 <label for="circleVelocity">Velocity:</label>
                 <span id="circleVelocityValue">100</span>
@@ -967,6 +1036,8 @@
 
         // Selected Circle Controls
         const selectedCircleControlsDiv = document.getElementById('selectedCircleControls');
+        const circleXPositionInput = document.getElementById('circleXPosition'); // NEW
+        const circleXRatioInput = document.getElementById('circleXRatio');     // NEW
         const circleVelocitySlider = document.getElementById('circleVelocity');
         const circleVelocityValueSpan = document.getElementById('circleVelocityValue');
         const circlePanSlider = document.getElementById('circlePan');
@@ -1306,6 +1377,7 @@
             { name: "Crash", path: "sounds/Crash.wav" },
             { name: "Clap 1", path: "sounds/Clap_1.wav" },
             { name: "Clap 2", path: "sounds/Clap_2.wav" },
+            { name: "Shaker", path: "sounds/Shaker.wav" },
             { name: "Cowbell", path: "sounds/Cowbell.wav" },
             { name: "Conga High", path: "sounds/Conga_High.wav" },
             { name: "Conga Low", path: "sounds/Conga_Low.wav" },
@@ -1329,12 +1401,22 @@
             { name: "Perc 18", path: "sounds/Perc_18.wav" },
             { name: "Perc 19", path: "sounds/Perc_19.wav" },
             { name: "Perc 20", path: "sounds/Perc_20.wav" },
+            { name: "Impact 1", path: "sounds/Impact_1.wav" },
+            { name: "Impact 2", path: "sounds/Impact_2.wav" },
+            { name: "Impact 3", path: "sounds/Impact_3.wav" },
+            { name: "Impact 4", path: "sounds/Impact_4.wav" },
+            { name: "Impact 5", path: "sounds/Impact_5.wav" },
+            { name: "Impact 6", path: "sounds/Impact_6.wav" },
+            { name: "Impact 7", path: "sounds/Impact_7.wav" },
+            { name: "Impact 8", path: "sounds/Impact_8.wav" },
+            { name: "Impact 9", path: "sounds/Impact_9.wav" },
+            
         ];
 
 
         // --- Demo Sequences Data ---
         const demoConfigs = [
-            // Demo 1 (Basic Beat)
+            // Demo 1 (Basic Beat - More complex)
             {
                 tempo: 120, skin: 'dark', globalLoopBeats: 4, masterVolume: 0.75,
                 isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
@@ -1345,11 +1427,13 @@
                 isHumanizerOn: false, humanizeTiming: 0, humanizeVelocity: 0, humanizePan: 0,
                 humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 100, pan: 0 }, { x: 300, velocity: 100, pan: 0 }, { x: 500, velocity: 100, pan: 0 }, { x: 700, velocity: 100, pan: 0 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "4 on the floor" },
-                    { id: 2, circles: [{ x: 200, velocity: 90, pan: -0.2 }, { x: 600, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap 1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: 4 on the floor with subtle 16th note ghost kicks
+                    { id: 1, circles: [{ x: 100, velocity: 105, pan: 0 }, { x: 250, velocity: 60, pan: -0.1 }, { x: 300, velocity: 100, pan: 0 }, { x: 500, velocity: 105, pan: 0 }, { x: 700, velocity: 100, pan: 0 }, { x: 750, velocity: 65, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Clap: On beats 2 and 4, with a lighter ghost clap on the 'and' of 2
+                    { id: 2, circles: [{ x: 300, velocity: 95, pan: -0.1 }, { x: 400, velocity: 70, pan: 0.0 }, { x: 700, velocity: 95, pan: 0.1 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             },
-            // Demo 2 (Syncopated)
+            // Demo 2 (Syncopated - More complex)
             {
                 tempo: 100, skin: 'blue-wave', globalLoopBeats: 4, masterVolume: 0.75,
                 isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
@@ -1362,12 +1446,15 @@
                 isHumanizerOn: true, humanizeTiming: 10, humanizeVelocity: 10, humanizePan: 5,
                 humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 500, velocity: 110, pan: 0 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 2, circles: [{ x: 350, velocity: 95, pan: -0.3 }, { x: 750, velocity: 95, pan: 0.3 }], division: "1/8", channel: "2", note: "38", wavFileName: "Clap 1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 3, circles: [{ x: 200, velocity: 80, pan: -0.5 }, { x: 400, velocity: 80, pan: 0 }, { x: 600, velocity: 80, pan: 0.5 }, { x: 800, velocity: 80, pan: 0.7 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: Syncopated pattern with strong 1 and 3, and off-beat accents
+                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 250, velocity: 80, pan: -0.1 }, { x: 500, velocity: 110, pan: 0 }, { x: 650, velocity: 85, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Clap: Main claps on 2 and 4, with additional 16th note accents
+                    { id: 2, circles: [{ x: 300, velocity: 95, pan: -0.2 }, { x: 450, velocity: 80, pan: 0.1 }, { x: 700, velocity: 95, pan: 0.2 }, { x: 850, velocity: 75, pan: -0.1 }], division: "1/8", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Percussion: Intricate 16th note pattern with varied pans and velocities
+                    { id: 3, circles: [{ x: 175, velocity: 80, pan: -0.5 }, { x: 225, velocity: 70, pan: -0.3 }, { x: 400, velocity: 80, pan: 0 }, { x: 575, velocity: 80, pan: 0.5 }, { x: 625, velocity: 70, pan: 0.3 }, { x: 800, velocity: 80, pan: 0.7 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             },
-            // Demo 3 (Triplets)
+            // Demo 3 (Triplets - More complex)
             {
                 tempo: 130, skin: 'retro-green', globalLoopBeats: 4, masterVolume: 0.8,
                 isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
@@ -1380,11 +1467,13 @@
                 isHumanizerOn: false, humanizeTiming: 5, humanizeVelocity: 5, humanizePan: 0,
                 humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 100, pan: 0 }, { x: 366, velocity: 100, pan: 0 }, { x: 633, velocity: 100, pan: 0 }], division: "1/3", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 2, circles: [{ x: 233, velocity: 85, pan: -0.4 }, { x: 499, velocity: 85, pan: 0 }, { x: 766, velocity: 85, pan: 0.4 }], division: "1/3", channel: "2", note: "38", wavFileName: "congahigh.wav", isMuted: false, volume: 0.65, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: Triplet pattern with strong accents and some subtle off-triplet hits
+                    { id: 1, circles: [{ x: 100, velocity: 100, pan: 0 }, { x: 233, velocity: 80, pan: -0.1 }, { x: 500, velocity: 100, pan: 0 }, { x: 633, velocity: 85, pan: 0.1 }, { x: 767, velocity: 70, pan: 0.2 }], division: "1/3", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Conga: Active triplet pattern with varied velocities and pans
+                    { id: 2, circles: [{ x: 167, velocity: 85, pan: -0.4 }, { x: 300, velocity: 90, pan: 0 }, { x: 433, velocity: 80, pan: 0.4 }, { x: 567, velocity: 85, pan: -0.2 }, { x: 700, velocity: 90, pan: 0.2 }, { x: 833, velocity: 80, pan: 0.5 }], division: "1/3", channel: "2", note: "38", wavFileName: "Conga_High.wav", isMuted: false, volume: 0.65, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             },
-            // Demo 4 (Groove)
+            // Demo 4 (Groove - More complex)
             {
                 tempo: 90, skin: 'deep-ocean', globalLoopBeats: 4, masterVolume: 0.75,
                 isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
@@ -1397,13 +1486,17 @@
                 isHumanizerOn: true, humanizeTiming: 15, humanizeVelocity: 15, humanizePan: 10,
                 humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 500, velocity: 110, pan: 0 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 2, circles: [{ x: 300, velocity: 90, pan: -0.2 }, { x: 700, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap 1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 3, circles: [{ x: 250, velocity: 85, pan: -0.5 }, { x: 450, velocity: 85, pan: -0.1 }, { x: 650, velocity: 85, pan: 0.1 }, { x: 850, velocity: 85, pan: 0.5 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 4, circles: [{ x: 175, velocity: 70, pan: -0.7 }, { x: 575, velocity: 70, pan: 0.7 }], division: "1/8", channel: "4", note: "45", wavFileName: "congalow.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: Groove-oriented kick with syncopated 16th notes
+                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 250, velocity: 70, pan: -0.1 }, { x: 400, velocity: 80, pan: 0 }, { x: 500, velocity: 110, pan: 0 }, { x: 750, velocity: 75, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Clap: Slightly delayed backbeats for a laid-back feel
+                    { id: 2, circles: [{ x: 325, velocity: 90, pan: -0.2 }, { x: 725, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Percussion 1: More varied and dense 8th and 16th note patterns
+                    { id: 3, circles: [{ x: 200, velocity: 85, pan: -0.5 }, { x: 300, velocity: 75, pan: -0.1 }, { x: 400, velocity: 80, pan: 0.1 }, { x: 500, velocity: 85, pan: 0.5 }, { x: 600, velocity: 75, pan: 0.3 }, { x: 700, velocity: 80, pan: 0.7 }, { x: 800, velocity: 70, pan: 0.9 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Percussion 2: Active fills and syncopated hits
+                    { id: 4, circles: [{ x: 125, velocity: 70, pan: -0.7 }, { x: 375, velocity: 65, pan: -0.3 }, { x: 525, velocity: 70, pan: 0.7 }, { x: 775, velocity: 65, pan: 0.3 }], division: "1/8", channel: "4", note: "45", wavFileName: "Conga_Low.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             },
-            // Demo 5 (Sparse)
+            // Demo 5 (Sparse - More complex placement)
             {
                 tempo: 110, skin: 'cyberpunk', globalLoopBeats: 4, masterVolume: 0.85,
                 isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
@@ -1416,12 +1509,15 @@
                 isHumanizerOn: false, humanizeTiming: 0, humanizeVelocity: 0, humanizePan: 0,
                 humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 120, pan: 0 }], division: "1/2", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.9, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 2, circles: [{ x: 400, velocity: 100, pan: 0 }], division: "1/2", channel: "2", note: "38", wavFileName: "Clap 1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 3, circles: [{ x: 700, velocity: 80, pan: 0 }], division: "1/2", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: Strong downbeat with a syncopated off-beat hit
+                    { id: 1, circles: [{ x: 100, velocity: 120, pan: 0 }, { x: 550, velocity: 90, pan: 0.1 }], division: "1/2", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.9, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Clap: A slightly early clap and a late one, adding tension
+                    { id: 2, circles: [{ x: 375, velocity: 100, pan: -0.1 }, { x: 825, velocity: 80, pan: 0.1 }], division: "1/2", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Percussion: Subtle, well-placed early and late hits
+                    { id: 3, circles: [{ x: 275, velocity: 60, pan: -0.1 }, { x: 725, velocity: 80, pan: 0.1 }], division: "1/2", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             },
-            // Demo 6 (Full)
+            // Demo 6 (Full - Significantly more complex)
             {
                 tempo: 140, skin: 'light', globalLoopBeats: 4, masterVolume: 0.7,
                 isChorusOn: true, chorusRate: 1.5, chorusDepth: 0.01, chorusFeedback: 0.2, chorusMix: 0.1,
@@ -1434,15 +1530,19 @@
                 isHumanizerOn: true, humanizeTiming: 8, humanizeVelocity: 8, humanizePan: 4,
                 humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
                 sequencers: [
-                    { id: 1, circles: [{ x: 100, velocity: 100, pan: 0 }, { x: 300, velocity: 100, pan: 0 }, { x: 500, velocity: 100, pan: 0 }, { x: 700, velocity: 100, pan: 0 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "4 on the floor" },
-                    { id: 2, circles: [{ x: 200, velocity: 90, pan: -0.2 }, { x: 600, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap 1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 3, circles: [{ x: 150, velocity: 85, pan: -0.5 }, { x: 350, velocity: 85, pan: -0.1 }, { x: 550, velocity: 85, pan: 0.1 }, { x: 750, velocity: 85, pan: 0.5 }], division: "1/8", channel: "3", note: "42", wavFileName: "congahigh.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 4, circles: [{ x: 250, velocity: 70, pan: -0.7 }, { x: 450, velocity: 70, pan: -0.3 }, { x: 650, velocity: 70, pan: 0.3 }, { x: 850, velocity: 70, pan: 0.7 }], division: "1/8", channel: "4", note: "45", wavFileName: "congalow.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    { id: 5, circles: [{ x: 125, velocity: 60, pan: -0.8 }, { x: 275, velocity: 60, pan: -0.6 }, { x: 325, velocity: 60, pan: -0.4 }, { x: 475, velocity: 60, pan: -0.2 }, { x: 525, velocity: 60, pan: 0.2 }, { x: 675, velocity: 60, pan: 0.4 }, { x: 725, velocity: 60, pan: 0.6 }, { x: 875, velocity: 60, pan: 0.8 }], division: "1/16", channel: "5", note: "49", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.4, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
+                    // Kick: Dense pattern with 4 on the floor base and numerous 16th note ghost kicks
+                    { id: 1, circles: [{ x: 100, velocity: 105, pan: 0 }, { x: 250, velocity: 70, pan: -0.1 }, { x: 300, velocity: 100, pan: 0 }, { x: 450, velocity: 65, pan: 0.1 }, { x: 500, velocity: 105, pan: 0 }, { x: 650, velocity: 70, pan: -0.1 }, { x: 700, velocity: 100, pan: 0 }, { x: 850, velocity: 65, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Clap: Solid backbeat on beats 2 and 4
+                    { id: 2, circles: [{ x: 300, velocity: 90, pan: -0.2 }, { x: 700, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Conga High: Intricate 16th note pattern with varied velocities and panning
+                    { id: 3, circles: [{ x: 150, velocity: 85, pan: -0.5 }, { x: 200, velocity: 75, pan: -0.3 }, { x: 350, velocity: 85, pan: -0.1 }, { x: 400, velocity: 75, pan: 0.1 }, { x: 550, velocity: 85, pan: 0.1 }, { x: 600, velocity: 75, pan: 0.3 }, { x: 750, velocity: 85, pan: 0.5 }, { x: 800, velocity: 75, pan: 0.7 }], division: "1/8", channel: "3", note: "42", wavFileName: "Conga_High.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Conga Low: Syncopated 16th note fills, creating rhythmic interplay
+                    { id: 4, circles: [{ x: 225, velocity: 70, pan: -0.7 }, { x: 375, velocity: 60, pan: -0.3 }, { x: 475, velocity: 65, pan: -0.1 }, { x: 625, velocity: 70, pan: 0.7 }, { x: 775, velocity: 60, pan: 0.3 }, { x: 875, velocity: 65, pan: 0.1 }], division: "1/16", channel: "4", note: "45", wavFileName: "Conga_Low.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
+                    // Perc_01: Very dense 16th note roll with dynamic velocities and sweeping pans
+                    { id: 5, circles: [{ x: 125, velocity: 60, pan: -0.8 }, { x: 175, velocity: 55, pan: -0.7 }, { x: 225, velocity: 60, pan: -0.6 }, { x: 275, velocity: 55, pan: -0.5 }, { x: 325, velocity: 60, pan: -0.4 }, { x: 375, velocity: 55, pan: -0.3 }, { x: 425, velocity: 60, pan: -0.2 }, { x: 475, velocity: 55, pan: -0.1 }, { x: 525, velocity: 60, pan: 0.1 }, { x: 575, velocity: 55, pan: 0.2 }, { x: 625, velocity: 60, pan: 0.3 }, { x: 675, velocity: 55, pan: 0.4 }, { x: 725, velocity: 60, pan: 0.5 }, { x: 775, velocity: 55, pan: 0.6 }, { x: 825, velocity: 60, pan: 0.7 }, { x: 875, velocity: 55, pan: 0.8 }], division: "1/16", channel: "5", note: "49", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.4, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
                 ]
             }
         ];
-
 
         // --- Tap Tempo Logic ---
         let tapTimes = [];
@@ -2271,6 +2371,7 @@
 
                 this.sequencerDiv.innerHTML = `
 
+                    <canvas id="rhythmCanvas-${this.id}" width="${this.canvasWidth}" height="${this.canvasHeight}"></canvas>
 
                     <div class="controls-left">
                         <div class="sequencer-playback-controls">
@@ -2286,13 +2387,12 @@
                             <input type="range" id="sequencerPan-${this.id}" min="-1" max="1" step="0.01" value="${this.sequencerPannerNode.pan.value}">
                             <div class="input-group" style="display: flex; gap: 5px;">
                                 <button class="play-stop-button" id="playStopButton-${this.id}" style="flex: 1;">${this.isMuted ? 'Muted' : 'Unmuted'}</button>
-                                <button class="solo-button" id="soloButton-${this.id}" style="flex: 1;">Solo</button>
+                                <button class="solo-button" id="soloButton-${this.id}" style="flex: 1;">Play/Stop Seq</button>
                             </div>
                         </div>
                     </div>
 
-                    <canvas id="rhythmCanvas-${this.id}" width="${this.canvasWidth}" height="${this.canvasHeight}"></canvas>
-
+                    
                     <div class="controls-right">
                         <div class="input-group">
                             <label for="presetRhythms-${this.id}">Preset Rhythms:</label>
@@ -2423,7 +2523,7 @@
                 this.midiOutNoteInput.addEventListener('change', () => console.log(`Sequencer ${this.id}: MIDI Note changed to ${this.midiOutNoteInput.value}`));
                 this.removeButton.addEventListener('click', this.remove.bind(this));
                 this.playStopButton.addEventListener('click', this.toggleMute.bind(this));
-                this.soloButton.addEventListener('click', this.toggleSolo.bind(this));
+                this.soloButton.addEventListener('click', this.toggleSequencerPlayback.bind(this)); // Changed from toggleSolo
                 this.phaseInput.addEventListener('input', this.handlePhaseChange.bind(this));
                 this.editModeSelect.addEventListener('change', (e) => {
                     this.editMode = e.target.value;
@@ -2490,6 +2590,11 @@
                     newX = Math.max(0, Math.min(this.canvasWidth, newX));
 
                     this.circles[selectedCircle.circleIndex].x = newX;
+                    
+                    // Update the selected circle controls immediately during drag (NEW)
+                    circleXPositionInput.value = newX.toFixed(0);
+                    circleXRatioInput.value = (newX / this.canvasWidth).toFixed(3);
+
                     this.draw();
                 }
             }
@@ -2540,12 +2645,18 @@
                 this.draw(); // Redraw to show phased circles
             }
 
-            toggleSolo() {
+            // Renamed from toggleSolo to toggleSequencerPlayback (NEW)
+            toggleSequencerPlayback() {
                 if (globalSoloedId === this.id) {
-                    // Unsoloing this sequencer
+                    // This sequencer is currently soloed, so stop soloing it
                     globalSoloedId = null;
+                    if (isPlayingGlobal) {
+                        toggleGlobalPlayStop(); // Stop global playback if it was initiated by solo
+                    }
+
+                    // Restore previous mute state for all sequencers
                     activeSequencers.forEach(seq => {
-                        seq.isMuted = preSoloMuteStates.get(seq.id) || false; // Restore previous mute state
+                        seq.isMuted = preSoloMuteStates.get(seq.id) || false;
                         if (seq.isMuted) {
                             seq.playStopButton.classList.add('stop');
                             seq.playStopButton.textContent = 'Muted';
@@ -2553,7 +2664,7 @@
                             seq.playStopButton.classList.remove('stop');
                             seq.playStopButton.textContent = 'Unmuted';
                         }
-                        seq.soloButton.classList.remove('active');
+                        seq.soloButton.classList.remove('active'); // Remove active class from all solo buttons
                     });
                     preSoloMuteStates.clear();
                     console.log(`Sequencer ${this.id} unsoloed.`);
@@ -2561,25 +2672,39 @@
                     // Soloing this sequencer
                     if (globalSoloedId !== null) { // If another sequencer was soloed, unsolo it first
                         const prevSoloed = activeSequencers.find(seq => seq.id === globalSoloedId);
-                        if (prevSoloed) prevSoloed.toggleSolo(); // Recursively call to unsolo previous
+                        if (prevSoloed) prevSoloed.toggleSequencerPlayback(); // Recursively call to unsolo previous
                     }
 
-                    globalSoloedId = this.id;
+                    // Store current mute states for all sequencers before changing them
                     activeSequencers.forEach(seq => {
-                        preSoloMuteStates.set(seq.id, seq.isMuted); // Save current mute state
+                        preSoloMuteStates.set(seq.id, seq.isMuted);
+                    });
+
+                    globalSoloedId = this.id; // Set this sequencer as soloed
+
+                    // Stop global playback if it's running before starting the solo one
+                    if (isPlayingGlobal) {
+                        toggleGlobalPlayStop();
+                    }
+
+                    // Ensure this sequencer is unmuted and others are muted
+                    activeSequencers.forEach(seq => {
                         if (seq.id === this.id) {
                             seq.isMuted = false; // Ensure soloed track is unmuted
                             seq.playStopButton.classList.remove('stop');
                             seq.playStopButton.textContent = 'Unmuted';
-                            seq.soloButton.classList.add('active');
+                            seq.soloButton.classList.add('active'); // Add active class to this solo button
                         } else {
                             seq.isMuted = true; // Mute other tracks
                             seq.playStopButton.classList.add('stop');
                             seq.playStopButton.textContent = 'Muted';
-                            seq.soloButton.classList.remove('active');
+                            seq.soloButton.classList.remove('active'); // Remove active class from other solo buttons
                         }
                     });
-                    console.log(`Sequencer ${this.id} soloed.`);
+
+                    // Start global playback (which will now only play this sequencer)
+                    toggleGlobalPlayStop();
+                    console.log(`Sequencer ${this.id} soloed and started playback.`);
                 }
             }
 
@@ -2651,10 +2776,11 @@
                     this.playStopButton.textContent = 'Unmuted';
                 }
 
-                // If this sequencer was soloed in saved settings, apply solo state
+                // If this sequencer was soloed in saved settings, apply solo state (NEW)
+                // We only set the active class here. The actual muting/unmuting of others happens
+                // in applyLoadedSettings after all sequencers are created.
                 if (settings.isSoloed && settings.isSoloed === true) {
                     this.soloButton.classList.add('active');
-                    globalSoloedId = this.id; // Only one can be soloed globally
                 } else {
                      this.soloButton.classList.remove('active');
                 }
@@ -2866,7 +2992,10 @@
                     this.playStopButton.textContent = 'Muted';
                     this.playStopButton.classList.add('stop');
                     this.soloButton.classList.remove('active'); // Muting automatically unsolos if active
-                    if (globalSoloedId === this.id) globalSoloedId = null;
+                    if (globalSoloedId === this.id) { // If it was soloed and now muted, clear global solo state
+                        globalSoloedId = null;
+                        preSoloMuteStates.clear(); // Clear previous states if solo is broken
+                    }
                 } else {
                     this.playStopButton.textContent = 'Unmuted';
                     this.playStopButton.classList.remove('stop');
@@ -2968,6 +3097,10 @@
                 const circle = this.circles[index];
                 // Only show controls if in 'edit' mode for this sequencer
                 if (this.editMode === 'edit' && circle) {
+                    // Update new X Position and X Ratio inputs (NEW)
+                    circleXPositionInput.value = circle.x.toFixed(0);
+                    circleXRatioInput.value = (circle.x / this.canvasWidth).toFixed(3);
+
                     circleVelocitySlider.value = circle.velocity;
                     circleVelocityValueSpan.textContent = circle.velocity;
                     circlePanSlider.value = Math.round(circle.pan * 100); // Display as -100 to 100
@@ -2985,6 +3118,32 @@
                     selectedCircle.circleIndex = -1;
                     selectedCircleControlsDiv.style.display = 'none';
                     this.draw(); // Redraw to remove highlight
+                }
+            }
+
+            // NEW: Update circle position from X Position input
+            updateCircleXPosition(newX) {
+                if (selectedCircle.sequencer === this && selectedCircle.circleIndex !== -1) {
+                    const circle = this.circles[selectedCircle.circleIndex];
+                    let clampedX = Math.max(0, Math.min(this.canvasWidth, parseFloat(newX)));
+                    circle.x = clampedX;
+                    circleXPositionInput.value = clampedX.toFixed(0);
+                    circleXRatioInput.value = (clampedX / this.canvasWidth).toFixed(3);
+                    this.circles.sort((a, b) => a.x - b.x);
+                    this.draw();
+                }
+            }
+
+            // NEW: Update circle position from X Ratio input
+            updateCircleXRatio(newRatio) {
+                if (selectedCircle.sequencer === this && selectedCircle.circleIndex !== -1) {
+                    const circle = this.circles[selectedCircle.circleIndex];
+                    let clampedRatio = Math.max(0, Math.min(1, parseFloat(newRatio)));
+                    circle.x = clampedRatio * this.canvasWidth;
+                    circleXPositionInput.value = circle.x.toFixed(0);
+                    circleXRatioInput.value = clampedRatio.toFixed(3);
+                    this.circles.sort((a, b) => a.x - b.x);
+                    this.draw();
                 }
             }
 
@@ -3092,6 +3251,8 @@
                         seq.playStopButton.textContent = 'Unmuted';
                         seq.soloButton.classList.remove('active');
                     });
+                     // If global playback was started by solo, stop it.
+                    if (isPlayingGlobal) toggleGlobalPlayStop();
                 }
             }
 
@@ -3140,12 +3301,14 @@
                 globalLoopTime = 0; // Reset global time
                 activeSequencers.forEach(seq => seq.resetPlaybackState()); // Ensure all start from beginning
                 globalAnimationFrameId = requestAnimationFrame(globalAnimate);
+                console.log("Global Playback Started.");
             } else {
                 globalPlayStopButton.textContent = 'Play All';
                 globalPlayStopButton.classList.remove('stop');
                 cancelAnimationFrame(globalAnimationFrameId);
                 globalLoopTime = 0;
                 activeSequencers.forEach(seq => seq.resetPlaybackState());
+                console.log("Global Playback Stopped.");
             }
         }
 
@@ -3180,10 +3343,12 @@
         function updateGlobalLoopBeats() {
             const newLoopBeats = parseInt(loopBeatsInput.value);
             if (!isNaN(newLoopBeats) && newLoopBeats >=1 && newLoopBeats <= 16) {
+                const oldLoopBeats = globalLoopBeats; // Store old value
                 globalLoopBeats = newLoopBeats;
                 console.log(`Loop Beats updated to ${globalLoopBeats}`);
-                // Recalculate division for all sequencers to match new loop length visually
-                activeSequencers.forEach(seq => seq.applyDivisionSetting());
+                // NO LONGER automatically call applyDivisionSetting() on all sequencers (NEW)
+                // Existing circles will remain at their absolute X positions.
+                
                 // If playing, reset global time to resync with new loop length
                 if (isPlayingGlobal) {
                     cancelAnimationFrame(globalAnimationFrameId);
@@ -3343,7 +3508,7 @@
                     phase: seq.phase,
                     editMode: seq.editMode,
                     presetRhythm: seq.presetRhythmsSelect.value, // NEW Preset Rhythm
-                    isSoloed: (globalSoloedId === seq.id)
+                    isSoloed: (globalSoloedId === seq.id) // Save solo state
                 });
             });
 
@@ -3356,7 +3521,7 @@
             if (isPlayingGlobal) toggleGlobalPlayStop();
             activeSequencers.forEach(seq => seq.remove()); // This also clears from activeSequencers
             activeSequencers = []; // Ensure empty
-            globalSoloedId = null; // Clear solo state
+            globalSoloedId = null; // Clear solo state from previous session
 
             // Clear all dynamic delay instances
             while(activeDelayInstances.length > 0) {
@@ -3386,7 +3551,10 @@
             chorusDepthSlider.value = loadedSettings.chorusDepth !== undefined ? loadedSettings.chorusDepth : 0.005;
             chorusFeedbackSlider.value = loadedSettings.chorusFeedback !== undefined ? loadedSettings.chorusFeedback : 0.0;
             chorusMixSlider.value = loadedSettings.chorusMix !== undefined ? loadedSettings.chorusMix : 0.0;
-            toggleChorus();
+            // Set effects on/off, then update controls
+            if (isChorusOn) { chorusOnOffButton.textContent = 'Chorus On'; chorusOnOffButton.style.backgroundColor = varCSS('--primary-color'); }
+            else { chorusOnOffButton.textContent = 'Chorus Off'; chorusOnOffButton.style.backgroundColor = varCSS('--input-bg'); }
+            if (chorusOnOffGain) chorusOnOffGain.gain.value = isChorusOn ? 1 : 0;
             updateChorusControls();
 
             // Flanger Settings
@@ -3395,7 +3563,9 @@
             flangerDepthSlider.value = loadedSettings.flangerDepth !== undefined ? loadedSettings.flangerDepth : 0.002;
             flangerFeedbackSlider.value = loadedSettings.flangerFeedback !== undefined ? loadedSettings.flangerFeedback : 0.0;
             flangerMixSlider.value = loadedSettings.flangerMix !== undefined ? loadedSettings.flangerMix : 0.0;
-            toggleFlanger();
+            if (isFlangerOn) { flangerOnOffButton.textContent = 'Flanger On'; flangerOnOffButton.style.backgroundColor = varCSS('--primary-color'); }
+            else { flangerOnOffButton.textContent = 'Flanger Off'; flangerOnOffButton.style.backgroundColor = varCSS('--input-bg'); }
+            if (flangerOnOffGain) flangerOnOffGain.gain.value = isFlangerOn ? 1 : 0;
             updateFlangerControls();
 
             // Phaser Settings
@@ -3406,7 +3576,9 @@
             phaserFrequencySlider.value = loadedSettings.phaserFrequency !== undefined ? loadedSettings.phaserFrequency : 300;
             phaserStagesInput.value = loadedSettings.phaserStages !== undefined ? loadedSettings.phaserStages : 4;
             phaserMixSlider.value = loadedSettings.phaserMix !== undefined ? loadedSettings.phaserMix : 0.0;
-            togglePhaser();
+            if (isPhaserOn) { phaserOnOffButton.textContent = 'Phaser On'; phaserOnOffButton.style.backgroundColor = varCSS('--primary-color'); }
+            else { phaserOnOffButton.textContent = 'Phaser Off'; phaserOnOffButton.style.backgroundColor = varCSS('--input-bg'); }
+            if (phaserOnOffGain) phaserOnOffGain.gain.value = isPhaserOn ? 1 : 0;
             updatePhaserControls();
 
 
@@ -3418,7 +3590,9 @@
             reverbDiffusionSlider.value = loadedSettings.reverbDiffusion !== undefined ? loadedSettings.reverbDiffusion : 0.5;
             reverbLowpassSlider.value = loadedSettings.reverbLowpass !== undefined ? loadedSettings.reverbLowpass : 8000;
             reverbHighpassSlider.value = loadedSettings.reverbHighpass !== undefined ? loadedSettings.reverbHighpass : 0; // NEW
-            toggleReverb(); // Apply state and update button
+            if (isReverbOn) { reverbOnOffButton.textContent = 'Reverb On'; reverbOnOffButton.style.backgroundColor = varCSS('--primary-color'); }
+            else { reverbOnOffButton.textContent = 'Reverb Off'; reverbOnOffButton.style.backgroundColor = varCSS('--input-bg'); }
+            if (reverbOnOffGain) reverbOnOffGain.gain.value = isReverbOn ? 1 : 0;
             updateReverbControls(); // Apply all reverb params
 
             // Delay Instances (NEW)
@@ -3433,7 +3607,8 @@
             humanizeTimingSlider.value = loadedSettings.humanizeTiming !== undefined ? loadedSettings.humanizeTiming : 0;
             humanizeVelocitySlider.value = loadedSettings.humanizeVelocity !== undefined ? loadedSettings.humanizeVelocity : 0;
             humanizePanSlider.value = loadedSettings.humanizePan !== undefined ? loadedSettings.humanizePan : 0;
-            toggleHumanizer(); // Apply state and update button
+            if (isHumanizerOn) { humanizerOnOffButton.textContent = 'Humanizer On'; humanizerOnOffButton.style.backgroundColor = varCSS('--primary-color'); }
+            else { humanizerOnOffButton.textContent = 'Humanizer Off'; humanizerOnOffButton.style.backgroundColor = varCSS('--input-bg'); }
             updateHumanizerControls(); // Update display spans
 
             // Collapsible states
@@ -3460,6 +3635,8 @@
             // Recreate sequencers
             sequencerIdCounter = 0; // Reset counter for new IDs
             let wavFilesToReupload = [];
+            let soloedSequencerIdFromSettings = null; // Track if any sequencer was soloed in settings
+
             loadedSettings.sequencers.forEach(seqData => {
                 addSequencer(seqData); // Pass all data, constructor handles it
                 // Check if the loaded WAV file name corresponds to a preloaded sound, otherwise alert the user
@@ -3467,7 +3644,37 @@
                 if (seqData.wavFileName && seqData.wavFileName !== 'No file selected' && !preloadedSounds.some(s => s.path.endsWith(seqData.wavFileName))) {
                     wavFilesToReupload.push(`Sequencer ${currentSeq.id}: ${seqData.wavFileName}`);
                 }
+                if (seqData.isSoloed) { // If this sequencer was soloed in the saved settings
+                    soloedSequencerIdFromSettings = currentSeq.id;
+                }
             });
+
+            // After all sequencers are created, apply the solo state
+            if (soloedSequencerIdFromSettings !== null) {
+                const soloedSeq = activeSequencers.find(seq => seq.id === soloedSequencerIdFromSettings);
+                if (soloedSeq) {
+                    // Manually set globalSoloedId and update visual states, but don't call toggleSequencerPlayback
+                    // as it would re-store preSoloMuteStates which we want to avoid for initial load.
+                    globalSoloedId = soloedSeq.id;
+                    activeSequencers.forEach(seq => {
+                        preSoloMuteStates.set(seq.id, seq.isMuted); // Store whatever mute state it loaded with
+                        if (seq.id === globalSoloedId) {
+                            seq.isMuted = false;
+                            seq.playStopButton.classList.remove('stop');
+                            seq.playStopButton.textContent = 'Unmuted';
+                            seq.soloButton.classList.add('active');
+                        } else {
+                            seq.isMuted = true;
+                            seq.playStopButton.classList.add('stop');
+                            seq.playStopButton.textContent = 'Muted';
+                            seq.soloButton.classList.remove('active');
+                        }
+                    });
+                     // Start global playback for the soloed track
+                    toggleGlobalPlayStop();
+                }
+            }
+
 
             if (wavFilesToReupload.length > 0) {
                 alert("Settings loaded! Please re-upload the following WAV files for the respective sequencers if they are not preloaded:\n" + wavFilesToReupload.join('\n'));
@@ -3522,7 +3729,10 @@
 
             // Collect all note events from all sequencers
             activeSequencers.forEach(seq => {
-                if (seq.isMuted || (globalSoloedId !== null && globalSoloedId !== seq.id)) return; // Don't save muted or non-soloed tracks
+                // Don't save muted or non-soloed tracks. 
+                // If a track is soloed, only that track is considered for export.
+                const shouldExport = !seq.isMuted && (globalSoloedId === null || globalSoloedId === seq.id);
+                if (!shouldExport) return; 
 
                 const midiChannel = parseInt(seq.midiOutChannelInput.value) - 1; // 0-15
                 const midiNote = parseInt(seq.midiOutNoteInput.value);
@@ -3781,7 +3991,9 @@
 
 
             activeSequencers.forEach(seq => {
-                if (!seq.audioBuffer || seq.isMuted || (globalSoloedId !== null && globalSoloedId !== seq.id)) return; // Skip if no buffer, muted, or not soloed
+                // Determine if this sequencer should be rendered for WAV export
+                const shouldRender = !seq.isMuted && (globalSoloedId === null || globalSoloedId === seq.id);
+                if (!seq.audioBuffer || !shouldRender) return; // Skip if no buffer, muted, or not soloed
 
                 const seqOfflineGain = offlineContext.createGain();
                 seqOfflineGain.gain.value = parseFloat(seq.sequencerVolumeSlider.value); // Use sequencer's volume
@@ -3996,7 +4208,17 @@
         humanizeVelocitySlider.addEventListener('input', updateHumanizerControls);
         humanizePanSlider.addEventListener('input', updateHumanizerControls);
 
-        // Selected Circle Controls Handlers
+        // Selected Circle Controls Handlers (NEW)
+        circleXPositionInput.addEventListener('change', (event) => {
+            if (selectedCircle.sequencer && selectedCircle.circleIndex !== -1) {
+                selectedCircle.sequencer.updateCircleXPosition(event.target.value);
+            }
+        });
+        circleXRatioInput.addEventListener('change', (event) => {
+            if (selectedCircle.sequencer && selectedCircle.circleIndex !== -1) {
+                selectedCircle.sequencer.updateCircleXRatio(event.target.value);
+            }
+        });
         circleVelocitySlider.addEventListener('input', () => {
             if (selectedCircle.sequencer && selectedCircle.circleIndex !== -1) {
                 const circle = selectedCircle.sequencer.circles[selectedCircle.circleIndex];
@@ -4014,10 +4236,10 @@
             }
         });
 
-        // Global keyboard listener for edit modes
+        // Global keyboard listener for edit modes AND spacebar for global play/stop (NEW)
         document.addEventListener('keydown', (event) => {
-            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') {
-                return; // Don't interfere with typing in inputs
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'BUTTON') {
+                return; // Don't interfere with typing in inputs, selects, or button presses
             }
 
             let modeToSet = null;
@@ -4027,6 +4249,10 @@
                 modeToSet = 'edit';
             } else if (event.key === 'd' || event.key === 'D') {
                 modeToSet = 'delete';
+            } else if (event.key === ' ') { // Spacebar for global play/stop
+                event.preventDefault(); // Prevent scrolling down
+                toggleGlobalPlayStop();
+                return; // Exit after handling spacebar
             }
 
             if (modeToSet) {
