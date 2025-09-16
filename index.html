@@ -656,12 +656,8 @@
             <label for="demoSequences">Demo Sequences:</label>
             <select id="demoSequences">
                 <option value="">- Select Demo -</option>
-                <option value="0">Demo 1 (Basic Beat)</option>
-                <option value="1">Demo 2 (Syncopated)</option>
-                <option value="2">Demo 3 (Triplets)</option>
-                <option value="3">Demo 4 (Groove)</option>
-                <option value="4">Demo 5 (Sparse)</option>
-                <option value="5">Demo 6 (Full)</option>
+                <option value="0">Demo 1</option>
+                <option value="1">Demo 2</option>
             </select>
         </div>
         
@@ -944,6 +940,8 @@
         <!-- Sequencer instances will be added here by JavaScript -->
     </div>
 
+    <script src="demos.js"></script>
+
     <script>
         // --- Global State and Constants ---
         const sequencerContainer = document.getElementById('sequencerContainer');
@@ -1125,6 +1123,18 @@
                 { ratioX: 0.5, velocity: 100, pan: 0 },
                 { ratioX: 0.75, velocity: 100, pan: 0 }
             ],
+            "Custom Beat (Pixels)": [ // This one uses absolute x in pixels
+                { x: 50, velocity: 110, pan: -0.3 },
+                { x: 250, velocity: 90, pan: 0.1 },
+                { x: 500, velocity: 105, pan: -0.1 },
+                { x: 750, velocity: 85, pan: 0.3 }
+            ],
+            "Hip-hop (Mixed)": [ // Example of converting existing to pixel for clarity
+                { x: 0, velocity: 110, pan: 0 },
+                { ratioX: 0.375, velocity: 80, pan: 0 }, // Can mix if logic handles it (which it will)
+                { x: 400, velocity: 110, pan: 0 },
+                { ratioX: 0.875, velocity: 80, pan: 0 }
+            ],
             "Hip-hop": [
                 { ratioX: 0.0, velocity: 110, pan: 0 },
                 { ratioX: 0.375, velocity: 80, pan: 0 },
@@ -1147,7 +1157,7 @@
                 { ratioX: 0.75, velocity: 100, pan: 0 },
                 { ratioX: 0.916, velocity: 70, pan: 0 }
             ],
-            "Double Beat": [
+            "Eight Beat": [
                 { ratioX: 0.0, velocity: 110, pan: 0 },
                 { ratioX: 0.125, velocity: 105, pan: 0 },
                 { ratioX: 0.25, velocity: 110, pan: 0 },
@@ -1156,6 +1166,13 @@
                 { ratioX: 0.625, velocity: 105, pan: 0 },
                 { ratioX: 0.75, velocity: 110, pan: 0 },
                 { ratioX: 0.875, velocity: 105, pan: 0 }
+            ],
+            "Rock Beat (kick on 1, 5 & 6)": [
+                { ratioX: 0.0, velocity: 110, pan: 0 },
+                { ratioX: 0.25, velocity: 110, pan: 0 },
+                { ratioX: 0.5, velocity: 110, pan: 0 },
+                { ratioX: 0.625, velocity: 105, pan: 0 },
+                { ratioX: 0.75, velocity: 110, pan: 0 }
             ],
             "Reggae": [ // Simplified one-drop with some hi-hat feel
                 { ratioX: 0.0, velocity: 100, pan: 0 },   // Kick on 1
@@ -1414,135 +1431,6 @@
         ];
 
 
-        // --- Demo Sequences Data ---
-        const demoConfigs = [
-            // Demo 1 (Basic Beat - More complex)
-            {
-                tempo: 120, skin: 'dark', globalLoopBeats: 4, masterVolume: 0.75,
-                isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
-                isFlangerOn: false, flangerRate: 0.5, flangerDepth: 0.002, flangerFeedback: 0.0, flangerMix: 0.0,
-                isPhaserOn: false, phaserRate: 0.2, phaserDepth: 1.0, phaserFeedback: 0.0, phaserFrequency: 300, phaserStages: 4, phaserMix: 0.0,
-                isReverbOn: false, reverbType: 'hall', reverbAmount: 0.0, reverbDecay: 1.0, reverbDiffusion: 0.5, reverbLowpass: 8000, reverbHighpass: 0,
-                delayInstances: [], // Now an array
-                isHumanizerOn: false, humanizeTiming: 0, humanizeVelocity: 0, humanizePan: 0,
-                humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: 4 on the floor with subtle 16th note ghost kicks
-                    { id: 1, circles: [{ x: 100, velocity: 105, pan: 0 }, { x: 250, velocity: 60, pan: -0.1 }, { x: 300, velocity: 100, pan: 0 }, { x: 500, velocity: 105, pan: 0 }, { x: 700, velocity: 100, pan: 0 }, { x: 750, velocity: 65, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Clap: On beats 2 and 4, with a lighter ghost clap on the 'and' of 2
-                    { id: 2, circles: [{ x: 300, velocity: 95, pan: -0.1 }, { x: 400, velocity: 70, pan: 0.0 }, { x: 700, velocity: 95, pan: 0.1 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            },
-            // Demo 2 (Syncopated - More complex)
-            {
-                tempo: 100, skin: 'blue-wave', globalLoopBeats: 4, masterVolume: 0.75,
-                isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
-                isFlangerOn: false, flangerRate: 0.5, flangerDepth: 0.002, flangerFeedback: 0.0, flangerMix: 0.0,
-                isPhaserOn: false, phaserRate: 0.2, phaserDepth: 1.0, phaserFeedback: 0.0, phaserFrequency: 300, phaserStages: 4, phaserMix: 0.0,
-                isReverbOn: true, reverbType: 'hall', reverbAmount: 0.3, reverbDecay: 1.5, reverbDiffusion: 0.6, reverbLowpass: 9000, reverbHighpass: 0,
-                delayInstances: [
-                    { id: 1, delayTime: 0.75, delayFeedback: 0.6, delayMix: 0.2, delayPan: 0, delayLowpass: 20000, delayHighpass: 0, isDelayOn: true }
-                ],
-                isHumanizerOn: true, humanizeTiming: 10, humanizeVelocity: 10, humanizePan: 5,
-                humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: Syncopated pattern with strong 1 and 3, and off-beat accents
-                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 250, velocity: 80, pan: -0.1 }, { x: 500, velocity: 110, pan: 0 }, { x: 650, velocity: 85, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Clap: Main claps on 2 and 4, with additional 16th note accents
-                    { id: 2, circles: [{ x: 300, velocity: 95, pan: -0.2 }, { x: 450, velocity: 80, pan: 0.1 }, { x: 700, velocity: 95, pan: 0.2 }, { x: 850, velocity: 75, pan: -0.1 }], division: "1/8", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Percussion: Intricate 16th note pattern with varied pans and velocities
-                    { id: 3, circles: [{ x: 175, velocity: 80, pan: -0.5 }, { x: 225, velocity: 70, pan: -0.3 }, { x: 400, velocity: 80, pan: 0 }, { x: 575, velocity: 80, pan: 0.5 }, { x: 625, velocity: 70, pan: 0.3 }, { x: 800, velocity: 80, pan: 0.7 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            },
-            // Demo 3 (Triplets - More complex)
-            {
-                tempo: 130, skin: 'retro-green', globalLoopBeats: 4, masterVolume: 0.8,
-                isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
-                isFlangerOn: false, flangerRate: 0.5, flangerDepth: 0.002, flangerFeedback: 0.0, flangerMix: 0.0,
-                isPhaserOn: false, phaserRate: 0.2, phaserDepth: 1.0, phaserFeedback: 0.0, phaserFrequency: 300, phaserStages: 4, phaserMix: 0.0,
-                isReverbOn: true, reverbType: 'spring', reverbAmount: 0.25, reverbDecay: 0.8, reverbDiffusion: 0.5, reverbLowpass: 6000, reverbHighpass: 0,
-                delayInstances: [
-                    { id: 1, delayTime: 0.333, delayFeedback: 0.4, delayMix: 0.1, delayPan: 0, delayLowpass: 20000, delayHighpass: 0, isDelayOn: true }
-                ],
-                isHumanizerOn: false, humanizeTiming: 5, humanizeVelocity: 5, humanizePan: 0,
-                humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: Triplet pattern with strong accents and some subtle off-triplet hits
-                    { id: 1, circles: [{ x: 100, velocity: 100, pan: 0 }, { x: 233, velocity: 80, pan: -0.1 }, { x: 500, velocity: 100, pan: 0 }, { x: 633, velocity: 85, pan: 0.1 }, { x: 767, velocity: 70, pan: 0.2 }], division: "1/3", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Conga: Active triplet pattern with varied velocities and pans
-                    { id: 2, circles: [{ x: 167, velocity: 85, pan: -0.4 }, { x: 300, velocity: 90, pan: 0 }, { x: 433, velocity: 80, pan: 0.4 }, { x: 567, velocity: 85, pan: -0.2 }, { x: 700, velocity: 90, pan: 0.2 }, { x: 833, velocity: 80, pan: 0.5 }], division: "1/3", channel: "2", note: "38", wavFileName: "Conga_High.wav", isMuted: false, volume: 0.65, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            },
-            // Demo 4 (Groove - More complex)
-            {
-                tempo: 90, skin: 'deep-ocean', globalLoopBeats: 4, masterVolume: 0.75,
-                isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
-                isFlangerOn: false, flangerRate: 0.5, flangerDepth: 0.002, flangerFeedback: 0.0, flangerMix: 0.0,
-                isPhaserOn: false, phaserRate: 0.2, phaserDepth: 1.0, phaserFeedback: 0.0, phaserFrequency: 300, phaserStages: 4, phaserMix: 0.0,
-                isReverbOn: true, reverbType: 'cave', reverbAmount: 0.4, reverbDecay: 2.0, reverbDiffusion: 0.7, reverbLowpass: 4000, reverbHighpass: 0,
-                delayInstances: [
-                    { id: 1, delayTime: 1.0, delayFeedback: 0.7, delayMix: 0.4, delayPan: 0, delayLowpass: 20000, delayHighpass: 0, isDelayOn: true }
-                ],
-                isHumanizerOn: true, humanizeTiming: 15, humanizeVelocity: 15, humanizePan: 10,
-                humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: Groove-oriented kick with syncopated 16th notes
-                    { id: 1, circles: [{ x: 100, velocity: 110, pan: 0 }, { x: 250, velocity: 70, pan: -0.1 }, { x: 400, velocity: 80, pan: 0 }, { x: 500, velocity: 110, pan: 0 }, { x: 750, velocity: 75, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.8, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Clap: Slightly delayed backbeats for a laid-back feel
-                    { id: 2, circles: [{ x: 325, velocity: 90, pan: -0.2 }, { x: 725, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Percussion 1: More varied and dense 8th and 16th note patterns
-                    { id: 3, circles: [{ x: 200, velocity: 85, pan: -0.5 }, { x: 300, velocity: 75, pan: -0.1 }, { x: 400, velocity: 80, pan: 0.1 }, { x: 500, velocity: 85, pan: 0.5 }, { x: 600, velocity: 75, pan: 0.3 }, { x: 700, velocity: 80, pan: 0.7 }, { x: 800, velocity: 70, pan: 0.9 }], division: "1/8", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Percussion 2: Active fills and syncopated hits
-                    { id: 4, circles: [{ x: 125, velocity: 70, pan: -0.7 }, { x: 375, velocity: 65, pan: -0.3 }, { x: 525, velocity: 70, pan: 0.7 }, { x: 775, velocity: 65, pan: 0.3 }], division: "1/8", channel: "4", note: "45", wavFileName: "Conga_Low.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            },
-            // Demo 5 (Sparse - More complex placement)
-            {
-                tempo: 110, skin: 'cyberpunk', globalLoopBeats: 4, masterVolume: 0.85,
-                isChorusOn: false, chorusRate: 1.0, chorusDepth: 0.005, chorusFeedback: 0.0, chorusMix: 0.0,
-                isFlangerOn: false, flangerRate: 0.5, flangerDepth: 0.002, flangerFeedback: 0.0, flangerMix: 0.0,
-                isPhaserOn: false, phaserRate: 0.2, phaserDepth: 1.0, phaserFeedback: 0.0, phaserFrequency: 300, phaserStages: 4, phaserMix: 0.0,
-                isReverbOn: true, reverbType: 'hall', reverbAmount: 0.1, reverbDecay: 0.8, reverbDiffusion: 0.4, reverbLowpass: 7000, reverbHighpass: 0,
-                delayInstances: [
-                    { id: 1, delayTime: 0.25, delayFeedback: 0.3, delayMix: 0.15, delayPan: 0, delayLowpass: 20000, delayHighpass: 0, isDelayOn: true }
-                ],
-                isHumanizerOn: false, humanizeTiming: 0, humanizeVelocity: 0, humanizePan: 0,
-                humanizerControlsCollapsed: true, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: Strong downbeat with a syncopated off-beat hit
-                    { id: 1, circles: [{ x: 100, velocity: 120, pan: 0 }, { x: 550, velocity: 90, pan: 0.1 }], division: "1/2", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.9, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Clap: A slightly early clap and a late one, adding tension
-                    { id: 2, circles: [{ x: 375, velocity: 100, pan: -0.1 }, { x: 825, velocity: 80, pan: 0.1 }], division: "1/2", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.7, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Percussion: Subtle, well-placed early and late hits
-                    { id: 3, circles: [{ x: 275, velocity: 60, pan: -0.1 }, { x: 725, velocity: 80, pan: 0.1 }], division: "1/2", channel: "3", note: "42", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            },
-            // Demo 6 (Full - Significantly more complex)
-            {
-                tempo: 140, skin: 'light', globalLoopBeats: 4, masterVolume: 0.7,
-                isChorusOn: true, chorusRate: 1.5, chorusDepth: 0.01, chorusFeedback: 0.2, chorusMix: 0.1,
-                isFlangerOn: true, flangerRate: 0.3, flangerDepth: 0.003, flangerFeedback: 0.3, flangerMix: 0.15,
-                isPhaserOn: true, phaserRate: 0.4, phaserDepth: 0.8, phaserFeedback: 0.4, phaserFrequency: 500, phaserStages: 6, phaserMix: 0.1,
-                isReverbOn: true, reverbType: 'hall', reverbAmount: 0.35, reverbDecay: 1.8, reverbDiffusion: 0.65, reverbLowpass: 10000, reverbHighpass: 0,
-                delayInstances: [
-                    { id: 1, delayTime: 0.5, delayFeedback: 0.55, delayMix: 0.25, delayPan: 0.1, delayLowpass: 15000, delayHighpass: 100, isDelayOn: true }
-                ],
-                isHumanizerOn: true, humanizeTiming: 8, humanizeVelocity: 8, humanizePan: 4,
-                humanizerControlsCollapsed: false, effectsControlsCollapsed: false,
-                sequencers: [
-                    // Kick: Dense pattern with 4 on the floor base and numerous 16th note ghost kicks
-                    { id: 1, circles: [{ x: 100, velocity: 105, pan: 0 }, { x: 250, velocity: 70, pan: -0.1 }, { x: 300, velocity: 100, pan: 0 }, { x: 450, velocity: 65, pan: 0.1 }, { x: 500, velocity: 105, pan: 0 }, { x: 650, velocity: 70, pan: -0.1 }, { x: 700, velocity: 100, pan: 0 }, { x: 850, velocity: 65, pan: 0.1 }], division: "1/4", channel: "1", note: "36", wavFileName: "Kick_01.wav", isMuted: false, volume: 0.75, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Clap: Solid backbeat on beats 2 and 4
-                    { id: 2, circles: [{ x: 300, velocity: 90, pan: -0.2 }, { x: 700, velocity: 90, pan: 0.2 }], division: "1/4", channel: "2", note: "38", wavFileName: "Clap_1.wav", isMuted: false, volume: 0.6, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Conga High: Intricate 16th note pattern with varied velocities and panning
-                    { id: 3, circles: [{ x: 150, velocity: 85, pan: -0.5 }, { x: 200, velocity: 75, pan: -0.3 }, { x: 350, velocity: 85, pan: -0.1 }, { x: 400, velocity: 75, pan: 0.1 }, { x: 550, velocity: 85, pan: 0.1 }, { x: 600, velocity: 75, pan: 0.3 }, { x: 750, velocity: 85, pan: 0.5 }, { x: 800, velocity: 75, pan: 0.7 }], division: "1/8", channel: "3", note: "42", wavFileName: "Conga_High.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Conga Low: Syncopated 16th note fills, creating rhythmic interplay
-                    { id: 4, circles: [{ x: 225, velocity: 70, pan: -0.7 }, { x: 375, velocity: 60, pan: -0.3 }, { x: 475, velocity: 65, pan: -0.1 }, { x: 625, velocity: 70, pan: 0.7 }, { x: 775, velocity: 60, pan: 0.3 }, { x: 875, velocity: 65, pan: 0.1 }], division: "1/16", channel: "4", note: "45", wavFileName: "Conga_Low.wav", isMuted: false, volume: 0.5, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" },
-                    // Perc_01: Very dense 16th note roll with dynamic velocities and sweeping pans
-                    { id: 5, circles: [{ x: 125, velocity: 60, pan: -0.8 }, { x: 175, velocity: 55, pan: -0.7 }, { x: 225, velocity: 60, pan: -0.6 }, { x: 275, velocity: 55, pan: -0.5 }, { x: 325, velocity: 60, pan: -0.4 }, { x: 375, velocity: 55, pan: -0.3 }, { x: 425, velocity: 60, pan: -0.2 }, { x: 475, velocity: 55, pan: -0.1 }, { x: 525, velocity: 60, pan: 0.1 }, { x: 575, velocity: 55, pan: 0.2 }, { x: 625, velocity: 60, pan: 0.3 }, { x: 675, velocity: 55, pan: 0.4 }, { x: 725, velocity: 60, pan: 0.5 }, { x: 775, velocity: 55, pan: 0.6 }, { x: 825, velocity: 60, pan: 0.7 }, { x: 875, velocity: 55, pan: 0.8 }], division: "1/16", channel: "5", note: "49", wavFileName: "Perc_01.wav", isMuted: false, volume: 0.4, pan: 0, phase: 0, editMode: "add", presetRhythm: "off" }
-                ]
-            }
-        ];
 
         // --- Tap Tempo Logic ---
         let tapTimes = [];
@@ -2399,10 +2287,13 @@
                             <select id="presetRhythms-${this.id}">
                                 <option value="off">- Off -</option>
                                 <option value="4 on the floor">4 on the floor</option>
+                                <option value="Custom Beat (Pixels)">Custom Beat (Pixels)</option>
+                                <option value="Hip-hop (Mixed)">Hip-hop (Mixed)</option>
                                 <option value="Hip-hop">Hip-hop</option>
                                 <option value="Funk">Funk</option>
                                 <option value="Swing">Swing</option>
-                                <option value="Double Beat">Double Beat</option>
+                                <option value="Eight Beat">Eight Beat</option>
+                                <option value="Rock Beat (kick on 1, 5 & 6)">Rock Beat (kick on 1, 5 & 6)</option>
                                 <option value="Reggae">Reggae</option>
                                 <option value="Blues">Blues</option>
                                 <option value="Jazz">Jazz</option>
@@ -3201,7 +3092,7 @@
                 console.log(`Sequencer ${this.id}: Random beat generated.`);
             }
 
-            // NEW: Apply preset rhythm
+            // Apply preset rhythm
             applyPresetRhythm(event, presetName = null) {
                 const selectedPreset = presetName || this.presetRhythmsSelect.value;
                 this.presetRhythm = selectedPreset; // Store selected preset name
@@ -3211,9 +3102,20 @@
                 if (rhythmPattern) {
                     this.circles = []; // Clear existing circles
                     rhythmPattern.forEach(beat => {
-                        const x = beat.ratioX * this.canvasWidth;
+                        let actualX;
+                        if (beat.hasOwnProperty('ratioX') && typeof beat.ratioX === 'number') {
+                            // If ratioX exists and is a number, use it
+                            actualX = beat.ratioX * this.canvasWidth;
+                        } else if (beat.hasOwnProperty('x') && typeof beat.x === 'number') {
+                            // If x exists and is a number, use it directly
+                            actualX = beat.x;
+                        } else {
+                            console.warn(`Sequencer ${this.id}: Beat object missing valid 'ratioX' or 'x' property. Defaulting to 0.`);
+                            actualX = 0; // Default if neither is found
+                        }
+
                         this.circles.push({
-                            x: x,
+                            x: actualX,
                             played: false,
                             velocity: beat.velocity,
                             pan: beat.pan
@@ -3226,6 +3128,7 @@
                     console.warn(`Sequencer ${this.id}: Preset rhythm '${selectedPreset}' not found.`);
                 }
             }
+
 
 
             // --- Remove Sequencer ---
